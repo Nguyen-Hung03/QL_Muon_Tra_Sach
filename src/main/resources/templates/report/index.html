@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Báo cáo')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('reports')}"></header>
+<main class="page form-narrow">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Tổng hợp</p>
+            <h1>Báo cáo</h1>
+        </div>
+    </div>
+    <section class="panel">
+        <a class="report-link" th:href="@{/reports/overdue}">
+            <strong>Phiếu mượn quá hạn</strong>
+            <span>Phiếu chưa trả và đã quá hạn.</span>
+        </a>
+        <a class="report-link" th:href="@{/reports/top-books}">
+            <strong>Top 5 sách được mượn nhiều nhất</strong>
+            <span>Xếp theo tổng số cuốn trên các phiếu.</span>
+        </a>
+        <a class="report-link" th:href="@{/reports/by-member}">
+            <strong>Số lượt mượn theo thành viên</strong>
+            <span>Mỗi phiếu tính là một lượt.</span>
+        </a>
+    </section>
+</main>
+</body>
+</html>

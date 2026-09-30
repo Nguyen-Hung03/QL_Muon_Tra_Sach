@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Thành viên')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('members')}"></header>
+<main class="page form-narrow">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Độc giả</p>
+            <h1 th:text="${member.id == null} ? 'Thêm thành viên' : 'Sửa thành viên'">Thành viên</h1>
+        </div>
+    </div>
+    <section class="panel">
+        <div class="panel-body">
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+            <form th:action="@{/members/save}" th:object="${member}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="mb-3">
+                    <label class="form-label">Họ và tên</label>
+                    <input type="text" th:field="*{fullName}" class="form-control" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" th:field="*{email}" class="form-control" required th:readonly="${member.id != null}">
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" th:field="*{phone}" class="form-control" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                </div>
+                <div class="form-check mb-4" th:if="${member.id == null}">
+                    <input class="form-check-input" type="checkbox" th:field="*{status}" id="statusMemberSwitch" checked disabled>
+                    <label class="form-check-label" for="statusMemberSwitch">Tài khoản mới được kích hoạt</label>
+                </div>
+                <div class="actions">
+                    <a th:href="@{/members}" class="btn btn-outline-secondary">Hủy</a>
+                    <button type="submit" class="btn btn-ink">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+</body>
+</html>

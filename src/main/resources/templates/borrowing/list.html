@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Phiếu mượn')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('borrowings')}"></header>
+<main class="page">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Quầy mượn trả</p>
+            <h1>Phiếu mượn</h1>
+        </div>
+        <a th:href="@{/borrowings/new}" class="btn btn-ink">Lập phiếu</a>
+    </div>
+    <section class="panel">
+        <div class="panel-body">
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+            <form method="get" th:action="@{/borrowings}" class="row g-2 mb-3">
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">Mọi trạng thái</option>
+                        <option th:each="st : ${statuses}" th:value="${st}" th:text="${st.label}" th:selected="${status == st}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="memberId" class="form-select">
+                        <option value="">Mọi độc giả</option>
+                        <option th:each="mem : ${members}" th:value="${mem.id}" th:text="${mem.fullName}" th:selected="${memberId == mem.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2"><input type="date" name="fromDate" class="form-control" th:value="${fromDate}"></div>
+                <div class="col-md-2"><input type="date" name="toDate" class="form-control" th:value="${toDate}"></div>
+                <div class="col-md-2 d-grid"><button class="btn btn-outline-secondary" type="submit">Lọc</button></div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="overdueOnly" value="true" id="overdueOnly" th:checked="${overdueOnly}">
+                        <label class="form-check-label" for="overdueOnly">Chỉ phiếu quá hạn chưa trả</label>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table data-table">
+                    <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Độc giả</th>
+                        <th>Ngày mượn</th>
+                        <th>Hạn trả</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${borrowings}">
+                        <td th:text="${'#' + item.id}"></td>
+                        <td th:text="${item.member.fullName}"></td>
+                        <td th:text="${#temporals.format(item.borrowDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${#temporals.format(item.dueDate, 'dd/MM/yyyy')}"></td>
+                        <td><span class="pill pill-muted" th:text="${item.status.label}"></span></td>
+                        <td class="text-end"><a class="btn btn-sm btn-outline-secondary" th:href="@{/borrowings/{id}(id=${item.id})}">Mở</a></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(borrowings)}">
+                        <td colspan="6" class="empty">Chưa có phiếu mượn.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Chi tiết phiếu')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('borrowings')}"></header>
+<main class="page">
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Phiếu mượn</p>
+            <h1 th:text="'#' + ${borrowing.id}">Chi tiết</h1>
+        </div>
+        <div class="actions">
+            <a class="btn btn-outline-secondary" th:href="@{/borrowings}">Danh sách</a>
+            <form th:if="${borrowing.status.name() != 'RETURNED'}"
+                  th:action="@{/borrowings/{id}/return(id=${borrowing.id})}" method="post"
+                  onsubmit="return confirm('Xác nhận đã trả toàn bộ sách trên phiếu này?')">
+                <button class="btn btn-ink" type="submit">Trả sách</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="panel mb-3">
+        <div class="panel-body meta-grid">
+            <p><span>Độc giả</span><br><strong th:text="${borrowing.member.fullName}"></strong></p>
+            <p><span>Trạng thái phiếu</span><br><strong th:text="${borrowing.status.label}"></strong></p>
+            <p><span>Ngày mượn</span><br><strong th:text="${#temporals.format(borrowing.borrowDate, 'dd/MM/yyyy HH:mm')}"></strong></p>
+            <p><span>Hạn trả</span><br><strong th:text="${#temporals.format(borrowing.dueDate, 'dd/MM/yyyy HH:mm')}"></strong></p>
+            <p><span>Ngày trả</span><br>
+                <strong th:if="${borrowing.returnedDate != null}" th:text="${#temporals.format(borrowing.returnedDate, 'dd/MM/yyyy HH:mm')}"></strong>
+                <strong th:if="${borrowing.returnedDate == null}">Chưa trả</strong>
+            </p>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-body">
+            <h2 class="h5 mb-3">Sách trong phiếu</h2>
+            <table class="table data-table">
+                <thead>
+                <tr><th>Sách</th><th>ISBN</th><th>Số lượng</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="detail : ${details}">
+                    <td th:text="${detail.book.title}"></td>
+                    <td th:text="${detail.book.isbn}"></td>
+                    <td th:text="${detail.quantity}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

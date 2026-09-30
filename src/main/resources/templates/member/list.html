@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Thành viên')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('members')}"></header>
+<main class="page">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Độc giả</p>
+            <h1>Thành viên</h1>
+        </div>
+        <a th:href="@{/members/new}" class="btn btn-ink">Thêm thành viên</a>
+    </div>
+    <section class="panel">
+        <div class="panel-body">
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+            <div class="toolbar">
+                <div class="btn-group">
+                    <a th:href="@{/members}" class="btn btn-outline-secondary"
+                       th:classappend="${statusFilter == null} ? 'active'">Tất cả</a>
+                    <a th:href="@{/members(status=true)}" class="btn btn-outline-secondary"
+                       th:classappend="${statusFilter != null && statusFilter == true} ? 'active'">Đang hoạt động</a>
+                    <a th:href="@{/members(status=false)}" class="btn btn-outline-secondary"
+                       th:classappend="${statusFilter != null && statusFilter == false} ? 'active'">Bị khóa</a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table data-table">
+                    <thead>
+                    <tr>
+                        <th>Thành viên</th>
+                        <th>Email</th>
+                        <th>Điện thoại</th>
+                        <th>Tham gia</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="member : ${members}">
+                        <td class="fw-semibold" th:text="${member.fullName}"></td>
+                        <td th:text="${member.email}"></td>
+                        <td th:text="${member.phone}"></td>
+                        <td th:text="${#temporals.format(member.createdAt, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <span th:if="${member.status}" class="pill pill-ok">Hoạt động</span>
+                            <span th:unless="${member.status}" class="pill pill-bad">Bị khóa</span>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a th:href="@{/members/{id}/edit(id=${member.id})}" class="btn btn-sm btn-outline-secondary">Sửa</a>
+                                <a th:href="@{/members/{id}/toggle-status(id=${member.id})}"
+                                   class="btn btn-sm"
+                                   th:classappend="${member.status} ? 'btn-outline-danger' : 'btn-outline-success'"
+                                   th:text="${member.status} ? 'Khóa' : 'Mở khóa'"
+                                   onclick="return confirm('Đổi trạng thái tài khoản này?')"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(members)}">
+                        <td colspan="6" class="empty">Không có thành viên phù hợp.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav th:if="${totalPages > 1}" class="mt-3">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/members(page=${currentPage - 1}, status=${statusFilter})}">Trước</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${currentPage == i} ? 'active'">
+                        <a class="page-link" th:href="@{/members(page=${i}, status=${statusFilter})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/members(page=${currentPage + 1}, status=${statusFilter})}">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+</main>
+</body>
+</html>

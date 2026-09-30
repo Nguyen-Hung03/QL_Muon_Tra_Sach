@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Lập phiếu mượn')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('borrowings')}"></header>
+<main class="page form-narrow">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Quầy mượn trả</p>
+            <h1>Lập phiếu mượn</h1>
+        </div>
+    </div>
+    <section class="panel">
+        <div class="panel-body">
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+            <form th:action="@{/borrowings}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Thành viên</label>
+                    <select name="memberId" class="form-select" required>
+                        <option value="" disabled selected>Chọn thành viên</option>
+                        <option th:each="mem : ${members}" th:value="${mem.id}" th:text="${mem.fullName + ' · ' + mem.email}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hạn trả</label>
+                    <input type="datetime-local" name="dueDate" class="form-control" th:value="${defaultDueDate}" required>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label mb-0">Sách</label>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="add-line">Thêm dòng</button>
+                </div>
+                <div id="lines">
+                    <div class="row g-2 mb-2 book-line">
+                        <div class="col-md-8"><select name="bookId" class="form-select book-select" required></select></div>
+                        <div class="col-md-3"><input type="number" name="quantity" class="form-control" min="1" value="1" required></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-outline-danger remove-line">×</button></div>
+                    </div>
+                </div>
+                <p class="text-muted small">Không trùng sách trên một phiếu. Số lượng mượn không được vượt quá số còn trong kho.</p>
+                <div class="actions">
+                    <a th:href="@{/borrowings}" class="btn btn-outline-secondary">Hủy</a>
+                    <button type="submit" class="btn btn-ink">Xác nhận</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+<select id="book-source" class="d-none">
+    <option value="">Chọn sách</option>
+    <option th:each="b : ${books}" th:value="${b.id}" th:text="${b.title + ' (còn ' + b.availableQuantity + ')'}"></option>
+</select>
+<script>
+    const source = document.getElementById('book-source');
+    function fillSelect(select) { select.innerHTML = source.innerHTML; }
+    document.querySelectorAll('.book-select').forEach(fillSelect);
+    document.getElementById('add-line').addEventListener('click', function () {
+        const copy = document.querySelector('.book-line').cloneNode(true);
+        copy.querySelector('input').value = 1;
+        fillSelect(copy.querySelector('select'));
+        document.getElementById('lines').appendChild(copy);
+    });
+    document.getElementById('lines').addEventListener('click', function (event) {
+        if (!event.target.classList.contains('remove-line')) return;
+        if (document.querySelectorAll('.book-line').length === 1) return;
+        event.target.closest('.book-line').remove();
+    });
+</script>
+</body>
+</html>

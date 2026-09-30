@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Sách')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('books')}"></header>
+<main class="page form-narrow">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Kho sách</p>
+            <h1 th:text="${book.id == null} ? 'Thêm sách' : 'Sửa sách'">Sách</h1>
+        </div>
+    </div>
+    <section class="panel">
+        <div class="panel-body">
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+            <form th:action="@{/books}" th:object="${book}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="mb-3">
+                    <label class="form-label">ISBN</label>
+                    <input type="text" th:field="*{isbn}" class="form-control" required th:readonly="${book.id != null}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tên sách</label>
+                    <input type="text" th:field="*{title}" class="form-control" required>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tác giả</label>
+                    <input type="text" th:field="*{author}" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Thể loại</label>
+                    <select name="categoryId" class="form-select" required>
+                        <option value="" disabled th:selected="${book.category == null}">Chọn thể loại</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"
+                                th:selected="${book.category != null && book.category.id == cat.id}"></option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Tổng số lượng</label>
+                        <input type="number" th:field="*{totalQuantity}" class="form-control" min="0" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Số lượng sẵn có</label>
+                        <input type="number" th:field="*{availableQuantity}" class="form-control" min="0" required>
+                    </div>
+                </div>
+                <div class="form-check form-switch mb-4">
+                    <input class="form-check-input" type="checkbox" th:field="*{status}" id="statusSwitch">
+                    <label class="form-check-label" for="statusSwitch">Cho phép mượn</label>
+                </div>
+                <div class="actions">
+                    <a th:href="@{/books}" class="btn btn-outline-secondary">Hủy</a>
+                    <button type="submit" class="btn btn-ink">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+</body>
+</html>

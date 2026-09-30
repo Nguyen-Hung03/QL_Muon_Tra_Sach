@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Lượt mượn theo thành viên')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('reports')}"></header>
+<main class="page">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Báo cáo</p>
+            <h1>Lượt mượn theo thành viên</h1>
+        </div>
+    </div>
+    <section class="panel">
+        <table class="table data-table mb-0">
+            <thead>
+            <tr><th>Thành viên</th><th>Email</th><th class="text-end">Số phiếu</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="stat : ${memberStats}">
+                <td class="fw-semibold" th:text="${stat.fullName}"></td>
+                <td th:text="${stat.email}"></td>
+                <td class="text-end fw-semibold" th:text="${stat.borrowCount}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(memberStats)}">
+                <td colspan="3" class="empty">Chưa có thành viên.</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

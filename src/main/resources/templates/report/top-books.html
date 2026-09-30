@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Top 5 sách')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('reports')}"></header>
+<main class="page">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Báo cáo</p>
+            <h1>Top 5 sách</h1>
+        </div>
+    </div>
+    <section class="panel">
+        <table class="table data-table mb-0">
+            <thead>
+            <tr><th>Hạng</th><th>ISBN</th><th>Sách</th><th class="text-end">Số cuốn đã mượn</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="book, stat : ${topBooks}">
+                <td><span class="pill pill-warn" th:text="${stat.count}"></span></td>
+                <td th:text="${book.isbn}"></td>
+                <td>
+                    <strong th:text="${book.title}"></strong>
+                    <div class="text-muted small" th:text="${book.author != null ? book.author : ''}"></div>
+                </td>
+                <td class="text-end fw-semibold" th:text="${book.totalBorrowed}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(topBooks)}">
+                <td colspan="4" class="empty">Chưa có phiếu mượn để xếp hạng.</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

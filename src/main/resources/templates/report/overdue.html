@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Phiếu quá hạn')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav('reports')}"></header>
+<main class="page">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Báo cáo</p>
+            <h1>Phiếu quá hạn</h1>
+        </div>
+    </div>
+    <section class="panel">
+        <div class="table-responsive">
+            <table class="table data-table mb-0">
+                <thead>
+                <tr>
+                    <th>Phiếu</th>
+                    <th>Độc giả</th>
+                    <th>Ngày mượn</th>
+                    <th>Hạn trả</th>
+                    <th>Trễ</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row : ${reportList}">
+                    <td th:text="${'#' + row.borrowingId}"></td>
+                    <td th:text="${row.memberName}"></td>
+                    <td th:text="${#temporals.format(row.borrowDate, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#temporals.format(row.dueDate, 'dd/MM/yyyy')}"></td>
+                    <td><span class="pill pill-bad" th:text="${row.lateDays + ' ngày'}"></span></td>
+                    <td th:text="${row.status.label}"></td>
+                    <td class="text-end"><a class="btn btn-sm btn-outline-secondary" th:href="@{/borrowings/{id}(id=${row.borrowingId})}">Mở</a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(reportList)}">
+                    <td colspan="7" class="empty">Không có phiếu quá hạn.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>
